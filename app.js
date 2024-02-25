@@ -1,16 +1,21 @@
-const http = require('node:http');
+// app.js
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const userRoutes = require('./routes/userRoutes');
 
-const hostname = '127.0.0.1';
+const app = express();
+const PORT = 3000;
 
-const port = 3000;
+app.use(bodyParser.json());
+app.use('/users', userRoutes);
 
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello World\n');
+mongoose.connect('mongodb://localhost:27017/nodejsCrudApp', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Could not connect to MongoDB...', err));
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-server.listen(port,
-    hostname, () => {
-        console.log('Server running at http://${hostname}:${port}/');
-    });
